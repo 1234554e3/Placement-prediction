@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Prediction</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"], input[type="submit"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        @media (max-width: 400px) {
+            form {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form id="placementForm">
+        <h1>Student Placement Prediction</h1>
+        <label for="cgpa">CGPA</label>
+        <input type="text" id="cgpa" name="cgpa" placeholder="Enter CGPA" required>
+
+        <label for="iq">IQ</label>
+        <input type="text" id="iq" name="iq" placeholder="Enter IQ" required>
+
+        <input type="submit" value="Predict">
+        <div class="status" id="status"></div> <!-- Placeholder for result -->
+    </form>
+
+    <script>
+        document.getElementById('placementForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the page from reloading
+            
+            const formData = new FormData(this);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const statusDiv = document.getElementById('status');
+                if (data.placement) {
+                    statusDiv.textContent = data.placement; // Display 'Placed' or 'Not Placed'
+                } else {
+                    statusDiv.textContent = 'Error: Unable to get result';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = 'Error: Something went wrong!';
+            });
+        });
+    </script>
+</body>
+</html>
